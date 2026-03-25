@@ -251,7 +251,9 @@ async function saveSettings() {
     try {
         await apiCall('POST', '/api/settings', body);
         await loadAgents();
-        addInfoMessage('Settings saved successfully.');
+        addInfoMessage('Settings saved successfully. Connected agents updated.');
+        // Re-render settings to show updated connection status
+        renderSettingsPanel();
     } catch (err) {
         addErrorMessage(`Failed to save settings: ${err.message}`);
     }
@@ -601,48 +603,70 @@ function renderMemoryPanel() {
     panel.appendChild(list);
 }
 
-function renderSettingsPanel() {
+async function renderSettingsPanel() {
     if (state.activeTab !== 'settings') return;
 
     const panel = $('#panel-content');
     if (!panel) return;
-    panel.innerHTML = '';
+    panel.innerHTML = '<div class="loading">Loading settings...</div>';
+
+    // Load current settings and agent statuses
+    let currentSettings = {};
+    try {
+        currentSettings = await apiCall('GET', '/api/settings');
+    } catch (err) {
+        console.error('Failed to load settings:', err);
+    }
+
+    const agentEntries = Object.entries(state.agents || {});
+
+    function statusBadge(key) {
+        const agent = state.agents[key];
+        if (!agent) return '<span style="color: var(--text-muted);">Unknown</span>';
+        if (agent.enabled) {
+            return '<span style="color: var(--success); font-weight: 600;">Connected</span>';
+        }
+        return '<span style="color: var(--text-muted);">Not connected</span>';
+    }
 
     panel.innerHTML = `
         <div class="settings-section">
-            <div class="settings-title">API Keys</div>
+            <div class="settings-title">AI Connections</div>
+            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;">
+                Enter API keys below to connect each AI provider. At least one is required.
+            </p>
             <div class="settings-field">
-                <label>OpenAI API Key</label>
-                <input type="password" id="setting-openai-key" placeholder="sk-...">
+                <label>OpenAI API Key ${statusBadge('openai')}</label>
+                <input type="password" id="setting-openai-key" placeholder="${currentSettings.openai_api_key || 'sk-...'}">
             </div>
             <div class="settings-field">
-                <label>Anthropic API Key</label>
-                <input type="password" id="setting-anthropic-key" placeholder="sk-ant-...">
+                <label>Anthropic API Key ${statusBadge('anthropic')}</label>
+                <input type="password" id="setting-anthropic-key" placeholder="${currentSettings.anthropic_api_key || 'sk-ant-...'}">
             </div>
             <div class="settings-field">
-                <label>Google API Key</label>
-                <input type="password" id="setting-google-key" placeholder="AI...">
+                <label>Google Gemini API Key ${statusBadge('gemini')}</label>
+                <input type="password" id="setting-google-key" placeholder="${currentSettings.google_api_key || 'AI...'}">
             </div>
             <div class="settings-field">
-                <label>Microsoft / Azure API Key</label>
-                <input type="password" id="setting-microsoft-key" placeholder="...">
+                <label>Microsoft / Azure API Key ${statusBadge('copilot')}</label>
+                <input type="password" id="setting-microsoft-key" placeholder="${currentSettings.microsoft_api_key || '...'}">
             </div>
-            <button class="btn btn-primary mt-8" onclick="saveSettings()">Save API Keys</button>
+            <button class="btn btn-primary mt-8" onclick="saveSettings()">Save & Connect</button>
         </div>
 
         <div class="settings-section">
             <div class="settings-title">Models</div>
             <div class="settings-field">
                 <label>OpenAI Model</label>
-                <input type="text" id="setting-openai-model" value="gpt-4o">
+                <input type="text" id="setting-openai-model" value="${currentSettings.openai_model || 'gpt-4o'}">
             </div>
             <div class="settings-field">
                 <label>Anthropic Model</label>
-                <input type="text" id="setting-anthropic-model" value="claude-sonnet-4-20250514">
+                <input type="text" id="setting-anthropic-model" value="${currentSettings.anthropic_model || 'claude-sonnet-4-20250514'}">
             </div>
             <div class="settings-field">
                 <label>Gemini Model</label>
-                <input type="text" id="setting-gemini-model" value="gemini-1.5-pro">
+                <input type="text" id="setting-gemini-model" value="${currentSettings.gemini_model || 'gemini-1.5-pro'}">
             </div>
         </div>
     `;

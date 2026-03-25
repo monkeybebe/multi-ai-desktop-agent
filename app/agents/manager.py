@@ -65,8 +65,7 @@ class AgentManager:
         else:
             agent.disable()
         # Reset client so it's recreated with the new key
-        if hasattr(agent, "_client"):
-            agent._client = None
+        agent.reset_client()
         return True
 
     async def query_all(

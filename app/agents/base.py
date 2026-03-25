@@ -53,6 +53,7 @@ class BaseAgent(ABC):
         self.model = model
         self.status = AgentStatus.IDLE
         self._enabled = bool(api_key)
+        self._client = None  # Subclasses may use a typed client
 
     @property
     def is_enabled(self) -> bool:
@@ -68,6 +69,10 @@ class BaseAgent(ABC):
 
     def disable(self) -> None:
         self._enabled = False
+
+    def reset_client(self) -> None:
+        """Reset the API client so it's recreated with updated credentials."""
+        self._client = None
 
     async def query(
         self,
