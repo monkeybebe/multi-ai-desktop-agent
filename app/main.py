@@ -522,12 +522,14 @@ async def websocket_endpoint(ws: WebSocket):
 
             elif event == "query":
                 # Handle query via WebSocket
-                instruction = msg.get("data", {}).get("instruction", "")
-                include_screen = msg.get("data", {}).get("include_screen", False)
+                query_data = msg.get("data", {})
+                instruction = query_data.get("instruction", "")
+                include_screen = query_data.get("include_screen", False)
+                monitor_index = query_data.get("monitor_index", 0)
                 if instruction:
                     # Process in background so we don't block
                     asyncio.create_task(
-                        _ws_query(ws, instruction, include_screen)
+                        _ws_query(ws, instruction, include_screen, monitor_index)
                     )
 
             elif event == "capture":
@@ -546,14 +548,16 @@ async def websocket_endpoint(ws: WebSocket):
         logger.info("WebSocket client disconnected (%d remaining)", len(ws_connections))
 
 
-async def _ws_query(ws: WebSocket, instruction: str, include_screen: bool) -> None:
+async def _ws_query(
+    ws: WebSocket, instruction: str, include_screen: bool, monitor_index: int = 0
+) -> None:
     """Process a query received via WebSocket."""
     try:
         screen_text = ""
         screen_image_b64 = ""
 
         if include_screen:
-            state = screen_parser.parse_screen()
+            state = screen_parser.parse_screen(monitor_index=monitor_index)
             screen_text = state.text
             screen_image_b64 = state.image_b64
 

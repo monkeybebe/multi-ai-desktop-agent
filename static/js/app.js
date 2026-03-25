@@ -618,7 +618,10 @@ async function renderSettingsPanel() {
         console.error('Failed to load settings:', err);
     }
 
-    const agentEntries = Object.entries(state.agents || {});
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
 
     function statusBadge(key) {
         const agent = state.agents[key];
@@ -637,19 +640,19 @@ async function renderSettingsPanel() {
             </p>
             <div class="settings-field">
                 <label>OpenAI API Key ${statusBadge('openai')}</label>
-                <input type="password" id="setting-openai-key" placeholder="${currentSettings.openai_api_key || 'sk-...'}">
+                <input type="password" id="setting-openai-key" placeholder="${escapeHtml(currentSettings.openai_api_key) || 'sk-...'}">
             </div>
             <div class="settings-field">
                 <label>Anthropic API Key ${statusBadge('anthropic')}</label>
-                <input type="password" id="setting-anthropic-key" placeholder="${currentSettings.anthropic_api_key || 'sk-ant-...'}">
+                <input type="password" id="setting-anthropic-key" placeholder="${escapeHtml(currentSettings.anthropic_api_key) || 'sk-ant-...'}">
             </div>
             <div class="settings-field">
                 <label>Google Gemini API Key ${statusBadge('gemini')}</label>
-                <input type="password" id="setting-google-key" placeholder="${currentSettings.google_api_key || 'AI...'}">
+                <input type="password" id="setting-google-key" placeholder="${escapeHtml(currentSettings.google_api_key) || 'AI...'}">
             </div>
             <div class="settings-field">
                 <label>Microsoft / Azure API Key ${statusBadge('copilot')}</label>
-                <input type="password" id="setting-microsoft-key" placeholder="${currentSettings.microsoft_api_key || '...'}">
+                <input type="password" id="setting-microsoft-key" placeholder="${escapeHtml(currentSettings.microsoft_api_key) || '...'}">
             </div>
             <button class="btn btn-primary mt-8" onclick="saveSettings()">Save & Connect</button>
         </div>
@@ -658,15 +661,15 @@ async function renderSettingsPanel() {
             <div class="settings-title">Models</div>
             <div class="settings-field">
                 <label>OpenAI Model</label>
-                <input type="text" id="setting-openai-model" value="${currentSettings.openai_model || 'gpt-4o'}">
+                <input type="text" id="setting-openai-model" value="${escapeHtml(currentSettings.openai_model) || 'gpt-4o'}">
             </div>
             <div class="settings-field">
                 <label>Anthropic Model</label>
-                <input type="text" id="setting-anthropic-model" value="${currentSettings.anthropic_model || 'claude-sonnet-4-20250514'}">
+                <input type="text" id="setting-anthropic-model" value="${escapeHtml(currentSettings.anthropic_model) || 'claude-sonnet-4-20250514'}">
             </div>
             <div class="settings-field">
                 <label>Gemini Model</label>
-                <input type="text" id="setting-gemini-model" value="${currentSettings.gemini_model || 'gemini-1.5-pro'}">
+                <input type="text" id="setting-gemini-model" value="${escapeHtml(currentSettings.gemini_model) || 'gemini-1.5-pro'}">
             </div>
         </div>
     `;
