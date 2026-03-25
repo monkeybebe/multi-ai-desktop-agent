@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WA/D - Wisdom Assistor/Distributor</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#129302;</text></svg>">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div>
+                <div class="logo">WA/D</div>
+                <div class="logo-sub">Wisdom Assistor/Distributor</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div id="connection-status" class="connection-status disconnected">
+                <span class="status-dot"></span> Disconnected
+            </div>
+            <div id="automation-badge" class="status-badge inactive">
+                <span class="status-dot"></span> Inactive
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Chat Panel (Left) -->
+        <div class="chat-panel">
+            <div id="chat-messages" class="chat-messages">
+                <!-- Messages rendered here by JS -->
+            </div>
+
+            <div class="chat-input-area">
+                <div class="chat-input-row">
+                    <div class="chat-input-wrapper">
+                        <textarea
+                            id="chat-input"
+                            class="chat-input"
+                            placeholder="Type a command or question... (Enter to send, Shift+Enter for newline)"
+                            rows="1"
+                        ></textarea>
+                    </div>
+                    <button id="send-btn" class="btn btn-primary btn-icon" title="Send">
+                        &#9654;
+                    </button>
+                </div>
+                <div class="chat-options">
+                    <label>
+                        <input type="checkbox" id="include-screen">
+                        Include screen capture
+                    </label>
+                    <select id="monitor-select" onchange="state.selectedMonitor = parseInt(this.value)" title="Select monitor" style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 6px; padding: 3px 8px; color: var(--text-secondary); font-size: 12px; outline: none;">
+                        <option value="0">All Monitors</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel (Tabs) -->
+        <div class="right-panel">
+            <div class="panel-tabs">
+                <div class="panel-tab active" data-tab="agents">Agents</div>
+                <div class="panel-tab" data-tab="memory">Memory</div>
+                <div class="panel-tab" data-tab="controls">Controls</div>
+                <div class="panel-tab" data-tab="settings">Settings</div>
+            </div>
+            <div id="panel-content" class="panel-content">
+                <!-- Tab content rendered here by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
