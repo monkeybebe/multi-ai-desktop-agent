@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "wad-multi-agent-assistant"
+version = "0.1.0"
+description = "WA/D - Wisdom Assistor/Distributor: Multi-Agent AI Desktop Assistant"
+authors = ["WA/D Team"]
+readme = "README.md"
+packages = [{include = "app"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.115.0"
+uvicorn = {extras = ["standard"], version = "^0.30.0"}
+websockets = "^13.0"
+httpx = "^0.27.0"
+openai = "^1.50.0"
+anthropic = "^0.34.0"
+google-generativeai = "^0.8.0"
+pillow = "^10.4.0"
+mss = "^9.0.0"
+pytesseract = "^0.3.10"
+pyautogui = "^0.9.54"
+pydantic = "^2.9.0"
+pydantic-settings = "^2.5.0"
+python-dotenv = "^1.0.0"
+aiosqlite = "^0.20.0"
+jinja2 = "^3.1.0"
+python-multipart = "^0.0.12"
+
+[tool.poetry.scripts]
+wad = "app.main:run"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+ignore = ["E501"]
